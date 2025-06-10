@@ -4,7 +4,7 @@ import { BaseNode } from './BaseNode';
 import { useStore } from '../store';
 import { VariableChecking } from '../components/VariableChecking';
 import { NameInput } from '../components/NameInput';
-import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
+import {TextSnippetOutlinedIcon} from '../config/icons';
 
 export const TextNode = ({ id, data, onClose }) => {
   const [currText, setCurrText] = useState(data?.text || '');

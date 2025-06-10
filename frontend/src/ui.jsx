@@ -19,7 +19,7 @@ import 'reactflow/dist/style.css';
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
 
-// ✅ Moved selector above
+
 const selector = (state) => ({
   nodes: state.nodes,
   edges: state.edges,
@@ -77,7 +77,7 @@ export const PipelineUI = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  // ✅ Add node on toolbar click
+
   const onAddNodeClick = (nodeType) => {
     if (!reactFlowInstance) return;
 

@@ -1,4 +1,4 @@
-import InputIcon from '@mui/icons-material/Input';
+import {InputIcon} from '../config/icons';
 import { Position } from 'reactflow';
 import { GenericNode } from './GenericNode';
 
