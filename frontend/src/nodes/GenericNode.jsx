@@ -1,10 +1,10 @@
 // components/GenericNode.jsx
 import { useStore } from '../store';
 import { BaseNode } from './BaseNode';
-import { NameInput } from './components/NameInput';
-import { VariableChecking } from './components/VariableChecking';
-import ToggleSwitch from './components/ToggleSwitch';
-import { TypeSelect } from './components/TypeSelect';
+import { NameInput } from '../components/NameInput';
+import { VariableChecking } from '../components/VariableChecking';
+import ToggleSwitch from '../components/ToggleSwitch';
+import { TypeSelect } from '../components/TypeSelect';
 
 export const GenericNode = ({ id, data = {}, config, onClose }) => {
   const updateNodeField = useStore((state) => state.updateNodeField);

@@ -1,34 +1,23 @@
 import { useState, useRef, useCallback } from 'react';
-import { ReactFlow, Controls, Background, MiniMap, ConnectionMode } from 'reactflow';
+import {
+  ReactFlow,
+  Controls,
+  Background,
+  MiniMap,
+  ConnectionMode,
+} from 'reactflow';
 import { useStore } from './store';
 import { shallow } from 'zustand/shallow';
-import { InputNode } from './nodes/InputNode';
-import { LLMNode } from './nodes/LLMNode';
-import { OutputNode } from './nodes/OutputNode';
-import { TextNode } from './nodes/TextNode';
-import { SubmitButton } from './SubmitButton';
 
-import InputIcon from '@mui/icons-material/Input';
-import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
-import OutputIcon from '@mui/icons-material/Output';
-import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
+import { SubmitButton } from './components/SubmitButton';
+import { Toolbar } from './components/Toolbar';
+import { nodeTypes } from './config/nodes';
+import { getInitNodeData } from './utils/InitNodes';
 
 import 'reactflow/dist/style.css';
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
-
-const createNodeComponent = (Component) => ({ id, data }) => {
-  const removeNode = useStore((state) => state.removeNode);
-  return <Component id={id} data={data} onClose={() => removeNode(id)} />;
-};
-
-const nodeTypes = {
-  customInput: createNodeComponent(InputNode),
-  llm: createNodeComponent(LLMNode),
-  customOutput: createNodeComponent(OutputNode),
-  text: createNodeComponent(TextNode),
-};
 
 const selector = (state) => ({
   nodes: state.nodes,
@@ -52,25 +41,6 @@ export const PipelineUI = () => {
     onEdgesChange,
     onConnect,
   } = useStore(selector, shallow);
-
-  const getInitNodeData = useCallback((nodeID, type) => {
-    switch (type) {
-      case 'text':
-        return { text: '', inputName: nodeID.replace('text-', 'text_'),
-        };
-      case 'customInput':
-        return { inputName: nodeID.replace('customInput-', 'input_'), inputType: 'Text' };
-      case 'customOutput':
-        return { outputName: nodeID.replace('customOutput-', 'output_'), outputType: 'Text' };
-      case 'llm':
-        return {
-          inputName: nodeID.replace('customLlm-', 'LLM_'),
-          response: nodeID.replace('customLlm-', 'response_'),
-        };
-      default:
-        return {};
-    }
-  }, []);
 
   const onDrop = useCallback(
     (event) => {
@@ -97,7 +67,7 @@ export const PipelineUI = () => {
         data: getInitNodeData(nodeID, nodeType),
       });
     },
-    [reactFlowInstance, getNodeID, addNode, getInitNodeData]
+    [reactFlowInstance, getNodeID, addNode]
   );
 
   const onDragOver = useCallback((event) => {
@@ -105,42 +75,10 @@ export const PipelineUI = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const buttons = [
-    { label: 'Input', nodeType: 'customInput', icon: <InputIcon fontSize="medium" /> },
-    { label: 'LLM', nodeType: 'llm', icon: <AutoAwesomeOutlinedIcon fontSize="medium" /> },
-    { label: 'Output', nodeType: 'customOutput', icon: <OutputIcon fontSize="medium" /> },
-    { label: 'Text', nodeType: 'text', icon: <TextSnippetOutlinedIcon fontSize="medium" /> },
-  ];
-
-  const handleDragStart = (event, nodeType) => {
-    event.dataTransfer.setData('application/reactflow', JSON.stringify({ nodeType }));
-    event.dataTransfer.effectAllowed = 'move';
-  };
-
   return (
     <>
-      {/* Toolbar */}
-      <div className="bg-white w-full px-6 py-3 shadow-sm border-b border-gray-300 flex space-x-4">
-        {buttons.map((btn) => (
-          <div
-            key={btn.label}
-            className="group flex flex-col items-center justify-center w-[80px] h-[70px] border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:-translate-y-1 hover:shadow-lg hover:bg-[#E8E8FD] hover:border-[#7A7DF3] transition cursor-pointer hover:text-[#3438ED]"
-            draggable
-            onDragStart={(e) => handleDragStart(e, btn.nodeType)}
-          >
-            <div className="text-gray-600 group-hover:text-[#3438ED] transition-colors">
-              {btn.icon}
-            </div>
-            <span>{btn.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* ReactFlow Canvas */}
-      <div
-        ref={reactFlowWrapper}
-        className="w-full h-[70vh] overflow-hidden"
-      >
+      <Toolbar />
+      <div ref={reactFlowWrapper} className="w-full h-[70vh] overflow-hidden">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -161,7 +99,6 @@ export const PipelineUI = () => {
           <MiniMap />
         </ReactFlow>
       </div>
-
       <div className="py-4">
         <SubmitButton />
       </div>

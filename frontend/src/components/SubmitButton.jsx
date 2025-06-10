@@ -1,6 +1,6 @@
 // src/SubmitButton.jsx
-import { useStore } from './store';
-import { submitPipeline } from './submit';
+import { useStore } from '../store';
+import { submitPipeline } from '../submit';
 
 export const SubmitButton = () => {
   const nodes = useStore((state) => state.nodes);

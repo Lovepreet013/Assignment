@@ -1,4 +1,4 @@
-import { useStore } from "../../store";
+import { useStore } from "../store";
 
 export const NameInput = ({ id, field }) => {
   const updateNodeField = useStore((state) => state.updateNodeField);
