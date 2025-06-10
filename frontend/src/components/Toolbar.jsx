@@ -7,6 +7,7 @@ import {
     BuildIcon,
     MenuBookIcon,
     TextSnippetIcon,
+    SmartToyIcon,
   } from '../config/icons';
   
   const buttons = [
@@ -18,7 +19,9 @@ import {
     { label: 'Tool', nodeType: 'tool', icon: <BuildIcon fontSize="medium" /> },
     { label: 'Prompt', nodeType: 'prompt', icon: <TextSnippetIcon fontSize="medium" /> },
     { label: 'Knowledge', nodeType: 'knowledge', icon: <MenuBookIcon fontSize="medium" /> },
+    { label: 'AI', nodeType: 'chatMemory', icon: <SmartToyIcon fontSize="medium" /> },
   ];
+
   
   export const Toolbar = () => {
     const handleDragStart = (event, nodeType) => {

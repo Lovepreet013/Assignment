@@ -7,6 +7,7 @@ import { RetrieverNode } from '../nodes/new nodes/RetreiverNode';
 import { ToolNode } from '../nodes/new nodes/ToolNode';
 import { PromptNode } from '../nodes/new nodes/PromptNode';
 import { KnowledgeNode } from '../nodes/new nodes/KnowledgeNode';
+import { ChatMemory } from "../nodes/new nodes/ChatMemory"
 
 const createNodeComponent = (Component) => ({ id, data }) => {
   const removeNode = useStore((state) => state.removeNode);
@@ -22,4 +23,5 @@ export const nodeTypes = {
   tool: createNodeComponent(ToolNode),
   prompt: createNodeComponent(PromptNode),
   knowledge: createNodeComponent(KnowledgeNode),
+  chatMemory : createNodeComponent(ChatMemory),
 };

@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import BuildIcon from '@mui/icons-material/Build';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 
 export {
   InputIcon,
@@ -16,4 +17,5 @@ export {
   BuildIcon,
   MenuBookIcon,
   TextSnippetIcon,
+  SmartToyIcon,
 };

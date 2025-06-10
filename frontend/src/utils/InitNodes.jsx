@@ -22,7 +22,7 @@ export const getInitNodeData = (nodeID, type) => {
         };
       case 'retriever':
         return {
-          topK: '5',
+          topK: '',
           retrieverType: 'BM25',
         };
       case 'tool':
@@ -41,6 +41,12 @@ export const getInitNodeData = (nodeID, type) => {
           sourceType: 'Docs',
           query: '',
         };
+      case 'chatMemory' : 
+        return{
+          modalName : '',
+          temperature : '',
+          maxTokens : '',
+        }
       default:
         return {};
     }

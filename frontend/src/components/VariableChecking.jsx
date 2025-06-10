@@ -1,3 +1,5 @@
+// frontend/src/nodes/components/VariableChecking.js
+
 import { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -24,6 +26,18 @@ export const VariableChecking = ({
     e.target.style.height = 'auto';
     e.target.style.height = `${e.target.scrollHeight}px`;
   }, []);
+
+  // --- REFINED handleKeyDown logic: Remove preventDefault() ---
+  const handleKeyDown = useCallback((e) => {
+    // Only stop propagation for Ctrl + Backspace
+    // This allows the browser's default behavior (deleting a word) to still work,
+    // but prevents the event from reaching React Flow or global listeners that might delete the node.
+    if (e.key === 'Backspace' && e.ctrlKey) {
+      // e.preventDefault(); // REMOVED: This line is removed to allow the default "delete word" behavior.
+      e.stopPropagation(); // KEPT: This line is crucial to stop the event from bubbling up.
+    }
+  }, []);
+  // --- End of refined handleKeyDown logic ---
 
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && handleModalClose();
@@ -64,6 +78,7 @@ export const VariableChecking = ({
         value={value}
         onChange={onChange}
         onInput={handleInlineInput}
+        onKeyDown={handleKeyDown} 
         rows={1}
         style={{ maxHeight: `${maxInlineHeight}px` }}
         className="block w-full outline-none border border-gray-300 rounded-md px-3 py-2 text-sm resize-none overflow-hidden focus:ring-2 focus:ring-indigo-200"
@@ -89,6 +104,7 @@ export const VariableChecking = ({
                 value={value}
                 onChange={onChange}
                 onInput={handleModalInput}
+                onKeyDown={handleKeyDown} 
                 className="flex-1 w-full h-full outline-none border border-gray-300 rounded-md px-3 py-2 text-sm resize-none overflow-auto focus:ring-2 focus:ring-indigo-200"
               />
             </div>

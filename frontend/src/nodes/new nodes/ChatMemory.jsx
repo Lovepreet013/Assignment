@@ -2,7 +2,7 @@ import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { Position } from 'reactflow';
 import { GenericNode } from '../GenericNode';
 
-export const LLMNode = (props) => (
+export const ChatMemory = (props) => (
   <GenericNode
     {...props}
     config={{
