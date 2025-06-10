@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Position, useUpdateNodeInternals } from 'reactflow';
 import { BaseNode } from './BaseNode';
 import { useStore } from '../store';
-import { VariableChecking } from './components/variableChecking';
+import { VariableChecking } from './components/VariableChecking';
 import { NameInput } from './components/NameInput';
 import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 

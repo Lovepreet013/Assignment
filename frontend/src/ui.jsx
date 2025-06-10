@@ -119,12 +119,12 @@ export const PipelineUI = () => {
 
   return (
     <>
-      {/* New Styled Toolbar */}
+      {/* Toolbar */}
       <div className="bg-white w-full px-6 py-3 shadow-sm border-b border-gray-300 flex space-x-4">
         {buttons.map((btn) => (
           <div
             key={btn.label}
-            className="group flex flex-col items-center justify-center w-[80px] h-[70px] border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:-translate-y-1 hover:shadow-lg hover:bg-[#E8E8FD] hover:border-[#7A7DF3] transition cursor-pointer"
+            className="group flex flex-col items-center justify-center w-[80px] h-[70px] border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:-translate-y-1 hover:shadow-lg hover:bg-[#E8E8FD] hover:border-[#7A7DF3] transition cursor-pointer hover:text-[#3438ED]"
             draggable
             onDragStart={(e) => handleDragStart(e, btn.nodeType)}
           >
