@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.barButtons:hover{
+    color : '#7A7DF3'
+}
