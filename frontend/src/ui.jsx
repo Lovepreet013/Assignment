@@ -19,6 +19,7 @@ import 'reactflow/dist/style.css';
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
 
+// ✅ Moved selector above
 const selector = (state) => ({
   nodes: state.nodes,
   edges: state.edges,
@@ -32,6 +33,7 @@ const selector = (state) => ({
 export const PipelineUI = () => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
   const {
     nodes,
     edges,
@@ -75,9 +77,24 @@ export const PipelineUI = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  // ✅ Add node on toolbar click
+  const onAddNodeClick = (nodeType) => {
+    if (!reactFlowInstance) return;
+
+    const position = reactFlowInstance.project({ x: 300, y: 200 });
+
+    const nodeID = getNodeID(nodeType);
+    addNode({
+      id: nodeID,
+      type: nodeType,
+      position,
+      data: getInitNodeData(nodeID, nodeType),
+    });
+  };
+
   return (
     <>
-      <Toolbar />
+      <Toolbar onAddNode={onAddNodeClick} />
       <div ref={reactFlowWrapper} className="w-full h-[70vh] overflow-hidden">
         <ReactFlow
           nodes={nodes}

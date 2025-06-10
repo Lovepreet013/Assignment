@@ -1,4 +1,3 @@
-// Updated TextNode.jsx (partially reusable)
 import { useState, useEffect } from 'react';
 import { Position, useUpdateNodeInternals } from 'reactflow';
 import { BaseNode } from './BaseNode';
@@ -10,16 +9,23 @@ import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 export const TextNode = ({ id, data, onClose }) => {
   const [currText, setCurrText] = useState(data?.text || '');
   const [variableHandles, setVariableHandles] = useState([]);
-
   const updateNodeInternals = useUpdateNodeInternals();
   const updateNodeField = useStore((state) => state.updateNodeField);
   const setEdgesState = useStore.setState;
 
   useEffect(() => {
-    const matches = [...currText.matchAll(/\{\{\s*([\w\d_\.]+)\s*\}\}/g)];
-    const textVars = [...new Set(matches.map((m) => m[1]))];
-    const varMap = {};
+    // Match groups like {{ var1, var2 }}
+    const matches = [...currText.matchAll(/\{\{\s*([^\}]+?)\s*\}\}/g)];
 
+    // Extract all individual variables (split by commas and trim)
+    const textVars = [...new Set(
+      matches
+        .flatMap(m => m[1].split(',').map(v => v.trim()))
+        .filter(Boolean)
+    )];
+
+    // Map variable name to source node/handle
+    const varMap = {};
     useStore.getState().nodes.forEach((node) => {
       const { id: nodeId, data = {} } = node;
       const keys = ['inputName', 'outputName', 'response'];
@@ -32,12 +38,14 @@ export const TextNode = ({ id, data, onClose }) => {
           else if (key === 'outputName') handleId = `${nodeId}-output`;
           else if (key === 'response') handleId = `${nodeId}-response`;
 
-          varMap[varName] = { nodeId, handleId };
+          if (!varMap[varName]) varMap[varName] = [];
+          varMap[varName].push({ nodeId, handleId });
         }
       });
     });
 
-    const validVars = textVars.filter((v) => varMap[v]);
+    // Create a left handle for each valid variable
+    const validVars = textVars.filter(v => varMap[v]?.length);
     const handles = validVars.map((v, i) => ({
       id: `textnode-${id}-var-${v}`,
       type: 'target',
@@ -48,36 +56,39 @@ export const TextNode = ({ id, data, onClose }) => {
     setVariableHandles(handles);
     updateNodeInternals(id);
 
+    // Update edges
     requestAnimationFrame(() => {
       const currentEdges = useStore.getState().edges;
       const newEdges = currentEdges.filter(
-        (e) => !(e.target === id && e.targetHandle && !validVars.includes(e.targetHandle))
+        (e) => !(e.target === id && e.targetHandle?.startsWith('textnode-'))
       );
 
       validVars.forEach((v) => {
-        const ref = varMap[v];
-        if (!ref) return;
-
+        const refs = varMap[v];
         const targetHandleId = `textnode-${id}-var-${v}`;
-        const alreadyConnected = newEdges.some(
-          (e) => e.source === ref.nodeId &&
-                  e.sourceHandle === ref.handleId &&
-                  e.target === id &&
-                  e.targetHandle === targetHandleId
-        );
 
-        if (!alreadyConnected) {
-          newEdges.push({
-            id: `e${ref.nodeId}-${id}-${v}`,
-            source: ref.nodeId,
-            sourceHandle: ref.handleId,
-            target: id,
-            targetHandle: targetHandleId,
-            type: 'smoothstep',
-            animated: false,
-            style: { stroke: '#7A7DF3', strokeWidth: 2 },
-          });
-        }
+        refs.forEach(({ nodeId, handleId }) => {
+          const alreadyConnected = newEdges.some(
+            (e) =>
+              e.source === nodeId &&
+              e.sourceHandle === handleId &&
+              e.target === id &&
+              e.targetHandle === targetHandleId
+          );
+
+          if (!alreadyConnected) {
+            newEdges.push({
+              id: `e${nodeId}-${id}-${v}`,
+              source: nodeId,
+              sourceHandle: handleId,
+              target: id,
+              targetHandle: targetHandleId,
+              type: 'smoothstep',
+              animated: false,
+              style: { stroke: '#7A7DF3', strokeWidth: 2 },
+            });
+          }
+        });
       });
 
       setEdgesState({ edges: newEdges });
